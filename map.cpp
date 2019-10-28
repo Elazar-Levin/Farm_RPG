@@ -41,24 +41,26 @@ void Map::render(Texture *t, int frame, int index, int scale)
 {
 	int relativeX = x / (tileWidth);  
 	int relativeY = y / (tileHeight);
-	if(relativeX<=0)
-		relativeX=0;
-	if(relativeY<=0)
-		relativeY=0;
+	//std::cout<<relativeX<<" "<<relativeY<<std::endl;
+	//if(relativeX<=0)
+	//	relativeX=0;
+	//if(relativeY<=0)
+	//	relativeY=0;
 	
-	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + 1 && i < width; i++)
+	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
 	{
-		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + 1 && j < height; j++)
+		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
 		{
-			map[i][j].x = i * tileWidth + x%tileWidth;
-			map[i][j].y = j * tileHeight + y%tileHeight;
+			map[i][j].x = (i * tileWidth-x); 
+			map[i][j].y = (j * tileHeight-y); 
 		}
 	
 	}	
-		
-	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + 1 && i < width; i++)
+	//	std::cout<<relativeX<<" "<<(t->myWin.getWidth())/ tileWidth<<" "<<width<<"\n";
+	//		std::cout<<relativeY<<" "<<(t->myWin.getHeight())/ tileHeight<<" "<<height<<"\n";
+	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
 	{
-		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + 1 && j < height; j++)
+		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
 		{
 			//map[i][j].x=map[i][j].x+x%t->tileWidth(index);
 			//map[i][j].y=map[i][j].y+y%t->tileHeight(index);
@@ -69,7 +71,7 @@ void Map::render(Texture *t, int frame, int index, int scale)
 
 void Map::move(int x,int y)
 {
-	this->x-=x;
-	this->y-=y;
+	this->x+=x;
+	this->y+=y;
 
 }
