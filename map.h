@@ -20,7 +20,7 @@ class Map
 		
 		void move(int x,int y);
 
-
+		void bound(Texture *t);
 };
 
 #endif

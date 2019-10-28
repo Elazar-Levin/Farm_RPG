@@ -69,7 +69,7 @@ int main()
     	SDL_SetRenderDrawColor(myTexture.myWin.sdlRenderer, 0, 0, 0, 255);
     	SDL_RenderClear(myTexture.myWin.sdlRenderer);
     	map.render(&myTexture, frame, 1, 1);
-    	map.move(0,10);
+    	map.move(-10,-10);
    	 	player.render(&myTexture, frame, 0, 2);
    	 	
    	 	SDL_RenderPresent(myTexture.myWin.sdlRenderer);

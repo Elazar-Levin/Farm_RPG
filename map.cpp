@@ -39,6 +39,7 @@ Map::Map(std::vector< std::vector <Tile> > map, int x, int y, int tileWidth, int
 
 void Map::render(Texture *t, int frame, int index, int scale)
 {
+	bound(t);
 	int relativeX = x / (tileWidth);  
 	int relativeY = y / (tileHeight);
 	//std::cout<<relativeX<<" "<<relativeY<<std::endl;
@@ -73,5 +74,19 @@ void Map::move(int x,int y)
 {
 	this->x+=x;
 	this->y+=y;
+
+}
+
+void Map::bound(Texture *t)
+{
+	if(x>=width*tileWidth - t->myWin.getWidth())
+		x=width*tileWidth - t->myWin.getWidth();
+	else if(x<=0)
+		x=0;
+	if(y>=height*tileHeight - t->myWin.getHeight())
+		y=height*tileHeight - t->myWin.getHeight();
+	else if(y<=0)
+		y=0;
+	
 
 }
