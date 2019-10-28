@@ -27,7 +27,7 @@ Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, T
  * @param t The Texture object to use.
  * @param frame The frame % numFrames that should be rendered.
  */
-void Tile::render(Texture *t, int frame, int scale)
+void Tile::render(Texture *t, int frame, int index, int scale)
 {
-	t->render(x,y,myFrames[frame%myFrames.size()].first,myFrames[frame%myFrames.size()].second,w,h,scale);
+	t->render(x,y,myFrames[frame%myFrames.size()].first,myFrames[frame%myFrames.size()].second,index,w,h,scale);
 }

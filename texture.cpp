@@ -1,5 +1,6 @@
 #include "texture.h"
 #include "stdexcept"
+#include <stdio.h>
 
 using namespace std;
 
@@ -10,11 +11,11 @@ using namespace std;
  */
 Texture::Texture()
 {
-	myTexture=nullptr;
-	myWidth=-1;
-	myHeight=-1;
-	myTileWidth=-1;
-	myTileHeight=-1;
+	//myTexture=nullptr;
+	//myWidth=-1;
+	//myHeight=-1;
+	//myTileWidth=-1;
+	//myTileHeight=-1;
 }
 
 /**
@@ -24,7 +25,9 @@ Texture::Texture()
  */
 Texture::~Texture()
 {
-	free();
+	for(int i = 0; i < myTextures.size(); i++ )
+		free(i);
+	//free();
 }
 
 /**
@@ -36,7 +39,9 @@ Texture::~Texture()
 void Texture::loadFile(std::string filename, int tileWidth, int tileHeight)
 {
     // Make sure we don't leak memory
-    free();
+    //free();
+
+
 
     // Load the image
     SDL_Surface* loadedSurface = IMG_Load( filename.c_str() );
@@ -44,21 +49,36 @@ void Texture::loadFile(std::string filename, int tileWidth, int tileHeight)
     if(loadedSurface == nullptr)
         throw runtime_error(std::string("Couldn't load sprite sheet: ") + IMG_GetError());
 
-    // Key out the background of the image (Black = 0, 0, 0)
+    // Key out the background of the image (Black = 0, 0, 0)??
     SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0, 0 ) );
 
-    // Create the SDL Texuture to effeciently access parts of the image
-    myTexture = SDL_CreateTextureFromSurface(myWin.sdlRenderer, loadedSurface );
+    // Create the SDL Texture to effeciently access parts of the image
+    SDL_Texture *myTexture = nullptr;
+
+   
+	myTexture = SDL_CreateTextureFromSurface(myWin.sdlRenderer, loadedSurface );
+    
+    //myTexture = SDL_CreateTextureFromSurface(myWin.sdlRenderer, loadedSurface );
+    
+    
     if(myTexture == nullptr)
         throw runtime_error(std::string("Couldn't create sprite texture: ") + SDL_GetError());
-
+	
+	
+	myTextures.push_back(myTexture);
+	
     // Remember width and height
-    myWidth  = loadedSurface->w;
-    myHeight = loadedSurface->h;
+    myWidths.push_back(loadedSurface->w);
+    myHeights.push_back(loadedSurface->h);
+    //myWidth  = loadedSurface->w;
+    //myHeight = loadedSurface->h;
 
     // Remember the tile width and height
-    myTileWidth  = tileWidth;
-    myTileHeight = tileHeight;
+    
+    myTileWidths.push_back(tileWidth);
+    myTileHeights.push_back(tileHeight);
+    //myTileWidth  = tileWidth;
+    //myTileHeight = tileHeight;
 
     // Now that we've created the texture, we can free the surface
     SDL_FreeSurface(loadedSurface);
@@ -67,18 +87,25 @@ void Texture::loadFile(std::string filename, int tileWidth, int tileHeight)
 /**
  * @brief Texture::free If the SDL texture exists, then free it.
  */
-void Texture::free()
+void Texture::free(int index)
 {
     // Check whether there is actually a texture to free
-    if(myTexture != nullptr){
+    if(myTextures[index] != nullptr){
         // Destroy the SDL texture
-        SDL_DestroyTexture(myTexture);
-		myTexture=nullptr;
-		myWidth=-1;
-		myHeight=-1;
-		myTileWidth=-1;
-		myTileHeight=-1;
+        SDL_DestroyTexture(myTextures[index]);
+		myTextures[index]=nullptr;
+		myWidths[index]=-1;
+		myHeights[index]=-1;
+		myTileWidths[index]=-1;
+		myTileHeights[index]=-1;
+		
+		
 	}
+	myTextures.erase(myTextures.begin() + index);
+	myHeights.erase(myHeights.begin() + index);
+	myWidths.erase(myWidths.begin() + index);
+	myTileWidths.erase(myTileWidths.begin() + index);
+	myTileHeights.erase(myTileHeights.begin() + index);
 }
 
 /**
@@ -87,14 +114,14 @@ void Texture::free()
  * @param y Screen co-ordinate to render the sprite.
  * @param src Area of the sprite sheet that should be rendered.
  */
-void Texture::render(int x, int y, SDL_Rect src, int scale)
+void Texture::render(int x, int y, SDL_Rect src, int index, int scale)
 {
 	SDL_Rect dest;
    	dest.x = x;
    	dest.y = y;
    	dest.w = src.w*scale;
    	dest.h = src.h*scale;
-   	SDL_RenderCopy(myWin.sdlRenderer,myTexture,&src,&dest);
+   	SDL_RenderCopy(myWin.sdlRenderer,myTextures[index],&src,&dest);
   
 }
 /**
@@ -106,10 +133,10 @@ void Texture::render(int x, int y, SDL_Rect src, int scale)
  * @param w The width of the sprite in tiles.
  * @param h The height of the sprite in tiles.
  */
-void Texture::render(int x, int y, int ssRow, int ssCol, int w, int h, int scale)
+void Texture::render(int x, int y, int ssRow, int ssCol, int index, int w, int h, int scale)
 {
-	SDL_Rect src = getSpritePosition(ssRow,ssCol,w,h);
-	render(x,y,src,scale);
+	SDL_Rect src = getSpritePosition(ssRow, ssCol, index, w, h);
+	render(x, y, src, index, scale);
 }
 
 /**
@@ -120,13 +147,13 @@ void Texture::render(int x, int y, int ssRow, int ssCol, int w, int h, int scale
  * @param height Height of the sprite measured in Tiles
  * @return An SDL_Rect that can be used by the render function to blit the sprit to the screen
  */
-SDL_Rect Texture::getSpritePosition(int ssRow, int ssCol, int width, int height)
+SDL_Rect Texture::getSpritePosition(int ssRow, int ssCol,int index, int width, int height)
 {
 	SDL_Rect pos;
-	pos.x=ssCol*myTileWidth;
-	pos.y=ssRow*myTileHeight;
-	pos.w=width*myTileWidth;
-	pos.h=height*myTileHeight;
+	pos.x=ssCol*myTileWidths[index];
+	pos.y=ssRow*myTileHeights[index];
+	pos.w=width*myTileWidths[index];
+	pos.h=height*myTileHeights[index];
 	return pos;
 }
 
@@ -134,36 +161,36 @@ SDL_Rect Texture::getSpritePosition(int ssRow, int ssCol, int width, int height)
  * @brief Texture::sheetWidth
  * @return Width of the sprite sheet in pixels
  */
-int Texture::sheetWidth()
+int Texture::sheetWidth(int index)
 {
-	return  myWidth;
+	return  myWidths[index];
 }
 
 /**
  * @brief Texture::sheetHeight
  * @return Height of the sprite sheet in pixels
  */
-int Texture::sheetHeight()
+int Texture::sheetHeight(int index)
 {
-	return myHeight;
+	return myHeights[index];
 }
 
 /**
  * @brief Texture::tileWidth
  * @return Width of each sprite tile in pixels
  */
-int Texture::tileWidth()
+int Texture::tileWidth(int index)
 {
-	return myTileWidth;
+	return myTileWidths[index];
 }
 
 /**
  * @brief Texture::tileHeight
  * @return Height of each sprite tile in pixels
  */
-int Texture::tileHeight()
+int Texture::tileHeight(int index)
 {
-	return myTileHeight;
+	return myTileHeights[index];
 }
 
 /**
@@ -174,9 +201,11 @@ int Texture::tileHeight()
  */
 void Texture::handle_event(SDL_Event &e, int rows, int cols)
 {
+ /*
     if(e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED){
         scaleGraphics(rows, cols);
     }
+ */
 }
 
 /**
@@ -184,13 +213,17 @@ void Texture::handle_event(SDL_Event &e, int rows, int cols)
  * @param rows Number of rows in the world.
  * @param rows Number of columns in the world.
  */
+ 
 void Texture::scaleGraphics(int rows, int cols)
 {
-    int win_width, win_height;
+ /*   int win_width, win_height;
     SDL_GetWindowSize(myWin.sdlWindow, &win_width, &win_height);
 
     float scaleX = win_width/(cols*double(tileWidth()));
     float scaleY = win_height/(rows*double(tileHeight()));
 
     SDL_RenderSetScale(myWin.sdlRenderer, scaleX, scaleY );
+ */
 }
+
+

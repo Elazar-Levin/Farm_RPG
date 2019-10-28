@@ -23,10 +23,10 @@ int main()
     //string spriteFilename = SPRITEFILENAME; // Leave this line
     string charFilename = "Assets/character.png";
     string backgroundFileName="Assets/allImages.png";
-    Texture charTexture;//, bgTexture;
-    charTexture.loadFile(charFilename, 16, 32);
-	//bgTexture.loadFile(backgroundFileName, 32, 32);
-	
+    Texture myTexture;//, bgTexture;
+    myTexture.loadFile(charFilename, 16, 32);
+	myTexture.loadFile(backgroundFileName, 32, 32);
+
 	std::vector< std::vector <int > > myMap;
 	string line;
 	ifstream myfile;
@@ -47,16 +47,8 @@ int main()
  	   	myfile.close();
   	}
   	
-  	Map map(myMap, 50, 70, 36, 36);
-  //	for(int i=0; i<20;i++)
-  //	{
-  //	for(int j = 0;j<20;j++)
-  //		{
-  			std::cout<<myMap.size()<<std::endl;
-  //		}
-  //	}
-  	
-  	
+  	Map map(myMap,-100,-100, 32, 32);
+  
     // Setup and Load Texture object here
     bool quit = false;
 	Tile player(0,0, {{0,0}, {0,1}, {0,2}, {0,3}},Player,1,1);
@@ -74,11 +66,13 @@ int main()
     		//player.handle_event(e);
     	
     	}
-    	SDL_SetRenderDrawColor(charTexture.myWin.sdlRenderer, 0, 0, 0, 255);
-    	SDL_RenderClear(charTexture.myWin.sdlRenderer);
-    	//map.render(&bgTexture, frame, 2);
-   	 	player.render(&charTexture, frame, 2);
-   	 	SDL_RenderPresent(charTexture.myWin.sdlRenderer);
+    	SDL_SetRenderDrawColor(myTexture.myWin.sdlRenderer, 0, 0, 0, 255);
+    	SDL_RenderClear(myTexture.myWin.sdlRenderer);
+    	map.render(&myTexture, frame, 1, 1);
+    	map.move(0,20);
+   	 	player.render(&myTexture, frame, 0, 2);
+   	 	
+   	 	SDL_RenderPresent(myTexture.myWin.sdlRenderer);
       
         this_thread::sleep_for(chrono::milliseconds(100));
         frame++;
