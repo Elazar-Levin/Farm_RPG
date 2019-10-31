@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+
+
 using namespace std;
 
 int Window::counter = 0;

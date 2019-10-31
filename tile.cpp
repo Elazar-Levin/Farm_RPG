@@ -12,7 +12,7 @@ int Tile::tileHeight = -1;
  * @param spriteWidth The width of the animation in tiles (usually 1).
  * @param spriteHeight The height of the animation in tiles (usually 1).
  */
-Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, TileType t, int spriteWidth, int spriteHeight)
+Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, TileType t, int spriteWidth, int spriteHeight, int scale)
 {
 	x= windowX;
 	y=windowY;
@@ -20,6 +20,7 @@ Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, T
 	myType=t;
 	w=spriteWidth;
 	h=spriteHeight;
+	this->scale = scale;
 	
 }
 /**
@@ -30,4 +31,10 @@ Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, T
 void Tile::render(Texture *t, int frame, int index, int scale)
 {
 	t->render(x,y,myFrames[frame%myFrames.size()].first,myFrames[frame%myFrames.size()].second,index,w,h,scale);
+}
+
+
+void Tile::handle_event(SDL_Event &e)
+{
+
 }

@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#define WIDTH 640// possibly not the best way to do things, but I think the best for now
+#define HEIGHT 480
 
 class Window
 {

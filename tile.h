@@ -23,16 +23,19 @@ public:
     Tile(int windowX, int windowY,
          std::vector<std::pair<int,int>> frames,
          TileType t,
-         int spriteWidth = 1, int spriteHeight = 1);
+         int spriteWidth = 1, int spriteHeight = 1, int scale = 1);
 
     void render(Texture *t, int frame, int index, int scale = 1);
     int x, y, w, h; // w & h are measured in sprite sheet blocks
+    int scale;
     std::vector<std::pair<int,int>> myFrames;
 
     TileType myType;
 
     // Static variables are shared between all instances of the class
     static int tileWidth, tileHeight; // measured in pixels
+    void handle_event(SDL_Event &e);
+    
 };
 
 #endif // TILE_H

@@ -9,7 +9,7 @@ Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int 
 	{
 		for(int j = 0; j< map[i].size();j++)
 		{
-			myMap[i][j] = Tile(i * tileWidth,j*tileHeight, {{map[i][j]/23,map[i][j]%23}}, Player, 1, 1);
+			myMap[i][j] = Tile(i * tileWidth,j*tileHeight, {{map[i][j]/23,map[i][j]%23}}, Player, 1, 1, 1);
 		}
 	
 	}
@@ -39,7 +39,7 @@ Map::Map(std::vector< std::vector <Tile> > map, int x, int y, int tileWidth, int
 
 void Map::render(Texture *t, int frame, int index, int scale)
 {
-	bound(t);
+	
 	int relativeX = x / (tileWidth);  
 	int relativeY = y / (tileHeight);
 	//std::cout<<relativeX<<" "<<relativeY<<std::endl;
@@ -70,23 +70,102 @@ void Map::render(Texture *t, int frame, int index, int scale)
 	}
 }
 
-void Map::move(int x,int y)
+bool Map::handle_event(SDL_Event &e, int val)
 {
-	this->x+=x;
-	this->y+=y;
+	if(e.type!=SDL_KEYDOWN)
+		return true;
+	switch(e.key.keysym.sym)
+	{
+		case SDLK_a: 
+		case SDLK_LEFT:
+			return move(Left, val);
+		case SDLK_s:
+		case SDLK_DOWN:
+			return move(Down, val);
+		case SDLK_d: 
+		case SDLK_RIGHT:
+			return move(Right, val);
+		case SDLK_w:
+		case SDLK_UP:
+			return move(Up, val);
+			
+	}
+	
 
 }
 
-void Map::bound(Texture *t)
+bool Map::move(Direction dir, int speed)
 {
-	if(x>=width*tileWidth - t->myWin.getWidth())
-		x=width*tileWidth - t->myWin.getWidth();
-	else if(x<=0)
-		x=0;
-	if(y>=height*tileHeight - t->myWin.getHeight())
-		y=height*tileHeight - t->myWin.getHeight();
-	else if(y<=0)
-		y=0;
 	
+	switch(dir)
+	{
+		case Up:
+			return move(0, -speed);
+		case Down:
+			return move(0, speed);
+		case Left:
+			return move(-speed, 0);
+		case Right:
+			return move(speed, 0);
+	}
 
+}
+
+bool Map::move(int x,int y)
+{
+	
+	this->x+=x;
+	this->y+=y;
+	return bound();
+
+}
+
+bool Map::bound()
+{
+	bool changed = false;
+	if(x >= width * tileWidth - WIDTH) 
+	{	
+		x = width * tileWidth - WIDTH;
+		changed=true;
+	}
+	else if(x <= 0)
+	{
+		x=0;
+		changed=true;
+	}
+	if(y >= height*tileHeight - HEIGHT)
+	{
+		y=height*tileHeight - HEIGHT;
+		changed=true;
+	}
+	else if(y<=0)
+	{
+		y=0;
+		changed=true;
+	}	
+	return changed;
+}
+
+bool Map::canMove(Direction dir)
+{
+	switch(dir)
+	{
+		case Up:
+			if(y<=0)
+				return false;
+			return true;
+		case Down:
+			if(y >= height*tileHeight - HEIGHT)
+				return false;
+			return true;
+		case Left:
+			if(x < 0)
+				return false;
+			return true;		
+		case Right:
+			if(x >= width * tileWidth - WIDTH)
+				return false;
+			return true;
+	}	
+	return true;
 }
