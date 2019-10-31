@@ -1,11 +1,15 @@
 #include "character.h"
 #include <iostream>
+#include "map.h"
 
 Character::Character(int windowX, int windowY,
          std::vector<std::vector<std::pair<int,int>>> frames,
-         TileType t,
+         TileType t, int relativeX, int relativeY,
          int spriteWidth, int spriteHeight, int scale) : Tile(windowX, windowY, frames[0], t, spriteWidth, spriteHeight, scale)
 {
+	this -> relativeX = relativeX;
+	this -> relativeY = relativeY;
+
 	up = frames[0];
 	down = frames[1];
 	left = frames[2];
@@ -51,22 +55,25 @@ void Character::move(int x, int y)
 void Character::bound()
 {
 	if(x + tileWidth >= WIDTH) 
-	{	
 		x = WIDTH - tileWidth;
-	}
 	else if(x<=0)
-	{
 		x=0;
-	}
 	if(y + tileHeight >= HEIGHT)
-	{
 		y = HEIGHT - tileHeight;
-	}
 	else if(y<=0)
-	{
 		y=0;
-	}	
+	if(relativeX < 0)
+		relativeX = 0;
+	if(relativeY < 0)
+		relativeY = 0;
+	//if(relativeX > Map::mapWidth)
+	//	relativeX = Map::mapWidth ;
+	
+	
 }
+
+
+
 
 bool Character::canMove(Direction dir)
 {
@@ -114,54 +121,94 @@ bool Character::isCentral(Direction dir)
 
 }
 
+void Character:: render(Texture *t, int frame, int index, int scale)
+{
+	bound();
+
+	int centralX = WIDTH/2 - tileWidth/2;
+	int centralY = HEIGHT/2 - tileHeight/2;
+	switch(dir)
+	{
+		case Up:
+			myFrames = up;
+			break;
+		case Down:
+			myFrames = down;
+			break;
+		case Left:
+			myFrames = left;
+			break;
+		case Right:
+			myFrames = right;
+			break;
+	}
+	
+	if(relativeX < centralX)
+		x = relativeX;
+	else if(relativeX > Map::mapWidth - centralX - tileWidth)
+		x =  ( Map::mapWidth - relativeX - tileWidth);
+	if(relativeY < centralY)
+		y = relativeY;
+	else if(relativeY > Map::mapHeight - centralY - tileHeight)
+		y = (Map::mapHeight - relativeY - tileHeight);
+	
+	
+	if(!isMoving)
+		frame = 0;
+	
+	
+	Tile::render(t, frame, index, scale);
+}
+
+void Character::centralize(int speed)
+{
+	int centralX = WIDTH/2 - tileWidth/2;
+	int centralY = HEIGHT/2 - tileHeight/2;
+	if(abs(centralX - x) < speed)
+		x = centralX;
+	if(abs(centralY - y) < speed)
+		y = centralY;
+}
+
 //THIIIS FUNCTION IS BULLSHIT, NEEDS SERIOUS REVISION
-int Character::handle_event(SDL_Event &e,int val)
+void Character::handle_event(SDL_Event &e,int val)
 {	
-/*
+	centralize(val);// might be a little glitchy, probably better if you can call this in render
 	if(e.type==SDL_KEYUP)
 	{
-		return 0;		
+		isMoving = false;
+		return;		
 	}
+	isMoving = true;
 	switch(e.key.keysym.sym)
 	{
 		case SDLK_a: 
 		case SDLK_LEFT:
-			if(canMove && x - val >= 0)
-				x-= val;
-			else if(canMove && x - val < 0)
-				x = 0;
-			myFrames = left;
-			return -1;
+			relativeX -= val;
+			dir = Left;
+			break;
+		
 		case SDLK_s:
 		case SDLK_DOWN:
-			if(canMove && y + tileHeight + val <= t -> myWin.getHeight())
-				y+=val;
-			else if(canMove && y + tileHeight * 2 + val > t -> myWin.getHeight()) //TODO: hardcoded the 2 for now, change it later to work with scale
-				y = t -> myWin.getHeight() - tileHeight*2;
-			myFrames = down;
-			return -1;
+			relativeY += val;
+			dir = Down;
+			break;
+			
+			
 		case SDLK_d: 
 		case SDLK_RIGHT:
-			if(canMove && x + tileWidth*2 + val <= t -> myWin.getWidth())
-				x+= val;
-			else if(canMove && x + tileWidth + val > t -> myWin.getWidth())
-				x = t -> myWin.getWidth() - tileWidth*2;
-			myFrames = right;
-			return -1;
+			relativeX += val;
+			dir = Right;
+			break;
+			
 			
 		case SDLK_w:
 		case SDLK_UP:
-			if(canMove && y - val >= 0)
-				y-= val;
-			else if(canMove && y - val < 0)
-				y = 0;
-			myFrames = up;
-			return -1;
-			
+			relativeY -=val;
+			dir = Up;
+			break;
 	}
-	*/
-	return 3;
-	
+
 
 }
 

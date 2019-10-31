@@ -1,5 +1,7 @@
 #include"map.h"
 #include<iostream>
+int Map::mapWidth = -1;
+int Map::mapHeight = -1;
 
 Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int tileHeight)
 {
@@ -19,7 +21,9 @@ Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int 
 	this->y = y;
 	width = myMap.size();
 	height = myMap[0].size();
-	this->tileWidth=tileWidth;
+	mapWidth = width * tileWidth;
+	mapHeight = height * tileHeight;
+	this->tileWidth = tileWidth;
 	this->tileHeight = tileHeight;
 	//Map(myMap, x, y, tileWidth, tileHeight);
 	
@@ -34,6 +38,15 @@ Map::Map(std::vector< std::vector <Tile> > map, int x, int y, int tileWidth, int
 	width = map.size();
 	height = map[0].size();
 	//std::cout<<this->map.size();//<<" "<<map[0].size()<<std::endl;
+}
+
+void Map::update(Character player)
+{
+	this -> x = player.relativeX - WIDTH/2 + player.tileWidth/2;
+	this -> y = player.relativeY - HEIGHT/2 + player.tileHeight/2; 
+	bound();
+	//render(t, frame, index, 1);
+	
 }
 
 

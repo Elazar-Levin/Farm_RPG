@@ -5,7 +5,10 @@
 #include "tile.h"
 #include "texture.h"
 #include "window.h"
+#include "character.h"
+
 #include <vector>
+
 
 class Map
 {
@@ -17,7 +20,8 @@ class Map
 		bool move(int x,int y);
 		bool handle_event(SDL_Event &e, int val = 0);
 		bool canMove(Direction dir);
-		
+		void update(Character player);
+		static int mapWidth, mapHeight;		
 		
 	private:
 		std::vector< std::vector <Tile> > map;

@@ -2,6 +2,9 @@
 #define CHARACTER_H
 
 #include "tile.h"
+#include <cstdlib>
+
+
 
 class Character : public Tile
 {
@@ -9,14 +12,19 @@ class Character : public Tile
 		
 		Character(int windowX, int windowY,
         std::vector<std::vector<std::pair<int,int>>> frames,
-        TileType t,
+        TileType t, int relativeX, int relativeY,
         int spriteWidth = 1, int spriteHeight = 1, int scale = 1);
 		
 		void setCanMove(bool b);
-		int handle_event(SDL_Event &e, int val);
+		void handle_event(SDL_Event &e, int val);
 		void move(Direction dir, int speed);
 		bool canMove(Direction dir);
 		bool isCentral(Direction dir);
+		
+		int relativeX, relativeY;
+		
+		void render(Texture *t, int frame, int index, int scale = 1);
+		int frameNo;
 	private:
 		void move(int x, int y);
 		void bound();
@@ -25,7 +33,9 @@ class Character : public Tile
 		std::vector<std::pair<int,int>> left;
 		std::vector<std::pair<int,int>> right;
 		std::vector<std::pair<int,int>> curr;
-			
+		Direction dir;
+		bool isMoving;
+		void centralize(int speed);
 		
 };
 

@@ -34,7 +34,4 @@ void Tile::render(Texture *t, int frame, int index, int scale)
 }
 
 
-void Tile::handle_event(SDL_Event &e)
-{
 
-}
