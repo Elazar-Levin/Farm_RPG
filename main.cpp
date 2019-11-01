@@ -17,7 +17,7 @@
 #include "character.h"
 
 
-#define SPEED 10 
+#define SPEED 5
 using namespace std;
 
 int main()
@@ -53,10 +53,10 @@ int main()
   	
   	set<SDL_Keycode> movingKeys = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
   	
-  	Map map(myMap,300,300, 32, 32);
-  	
+  	Map map(myMap,300,300, 32, 32, myTexture.sheetWidth(1)/myTexture.tileWidth(1));
+  
     bool quit = false;
-	Character player(320-32,240-64, {{{2,0}, {2,1}, {2,2}, {2,3}},{{0,0},{0,1},{0,2},{0,3}},{{3,0},{3,1},{3,2},{3,3}},{{1,0},{1,1},{1,2},{1,3}}},Player, 100, 100,1,1,1,2);
+	Character player(320-32,240-64, {{{2,0}, {2,1}, {2,2}, {2,3}},{{0,0},{0,1},{0,2},{0,3}},{{3,0},{3,1},{3,2},{3,3}},{{1,0},{1,1},{1,2},{1,3}},{{0,5},{0,6},{0,7}}},Player, 100, 100,1,1,1,2);
 
     int frame=0;
  
@@ -81,16 +81,17 @@ int main()
     	}
     		
     
-    	SDL_SetRenderDrawColor(myTexture.myWin.sdlRenderer, 0, 0, 0, 255);
-    	SDL_RenderClear(myTexture.myWin.sdlRenderer);
+    	//SDL_SetRenderDrawColor(myTexture.myWin.sdlRenderer, 0, 0, 0, 255);
+    	//SDL_RenderClear(myTexture.myWin.sdlRenderer);
 
     	map.update(player);
+    	//test.update(player);
     	map.render(&myTexture, frame, 1, 1);
-    
+    	//test.render(&myTexture, frame, 1, 1);
    	 	player.render(&myTexture, frame, 0, 2);
    	 	SDL_RenderPresent(myTexture.myWin.sdlRenderer);
       
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(75));
         frame++;
     }
 

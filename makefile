@@ -3,7 +3,7 @@ OBJ=$(SRC:%.cpp=%.o)
 
 LFLAGS=-lSDL2 -lSDL2_image
 CURRDIR=`pwd`
-CXX=g++ -std=c++11 -Wall -g
+CXX=g++ -std=c++11 -Wall -g -o farm
 
 all: $(OBJ)
 	$(CXX) $(OBJ) $(LFLAGS)

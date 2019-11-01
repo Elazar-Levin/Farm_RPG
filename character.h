@@ -31,7 +31,8 @@ class Character : public Tile
 		std::vector<std::pair<int,int>> down;
 		std::vector<std::pair<int,int>> left;
 		std::vector<std::pair<int,int>> right;
-	
+		std::vector<std::pair<int,int>> idle;
+		int idleTimer;
 		Direction dir;
 		bool isMoving;
 		void centralize(int speed);

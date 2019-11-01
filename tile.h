@@ -10,7 +10,7 @@
 
 /// Enumeration representing the type of the tile. This is useful
 /// later when we code the game logic.
-enum TileType{Player};
+enum TileType{Player, Wall, NotWall};
 
 enum Direction{Up, Down, Left, Right};
 

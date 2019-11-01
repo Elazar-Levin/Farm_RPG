@@ -13,7 +13,7 @@
 class Map
 {
 	public:
-		Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int tileHeight);
+		Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int tileHeight, int sheetWidth);
 		void render(Texture *t, int frame, int index, int scale = 1);
 		void update(Character player);
 		static int mapWidth, mapHeight;		

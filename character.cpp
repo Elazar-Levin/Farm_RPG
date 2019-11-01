@@ -5,16 +5,16 @@
 Character::Character(int windowX, int windowY,
          std::vector<std::vector<std::pair<int,int>>> frames,
          TileType t, int relativeX, int relativeY,
-         int spriteWidth, int spriteHeight, int scale, int animationSpeed) : Tile(windowX, windowY, frames[0], t, spriteWidth, spriteHeight, scale, animationSpeed)
+         int spriteWidth, int spriteHeight, int scale, int animationSpeed) : Tile(windowX, windowY, frames[1], t, spriteWidth, spriteHeight, scale, animationSpeed)
 {
 	this -> relativeX = relativeX;
 	this -> relativeY = relativeY;
-
+	idleTimer = 0;
 	up = frames[0];
 	down = frames[1];
 	left = frames[2];
 	right = frames[3];
-	
+	idle = frames[4];
 }
 
 
@@ -46,7 +46,7 @@ void Character::bound()
 
 void Character:: render(Texture *t, int frame, int index, int scale)
 {
-	bound();
+	
 
 	int centralX = WIDTH/2 - tileWidth/2;
 	int centralY = HEIGHT/2 - tileHeight/2;
@@ -65,25 +65,25 @@ void Character:: render(Texture *t, int frame, int index, int scale)
 			myFrames = right;
 			break;
 	}
-	
+	//if(idleTimer >= 100)
+	//{
+	//	myFrames = idle;
+	//	animationSpeed*=3;
+	//}
 	if(relativeX < centralX)
 		x = relativeX;
 	else if(relativeX > Map::mapWidth - centralX - tileWidth)
-		//x = WIDTH - relativeX - tileWidth;
-		{
 			x =(WIDTH - ( Map::mapWidth - relativeX) )- tileWidth;
-			std::cout<< x <<" " << relativeX<< " "<<Map::mapWidth<<" "<<tileWidth<<std::endl; 
-		}	
 	if(relativeY < centralY)
 		y = relativeY;
 	else if(relativeY > Map::mapHeight - centralY - tileHeight)
-		//y = HEIGHT - relativeY - tileHeight; 
 		y = HEIGHT - (Map::mapHeight - relativeY) - tileHeight;
 
 	bound();
-	if(!isMoving)
+	if(!isMoving)//&& idleTimer<100)
 		frame = 0;
-	
+//		idleTimer++;
+		
 	
 	Tile::render(t, frame, index, scale);
 }
@@ -100,13 +100,16 @@ void Character::centralize(int speed)
 
 void Character::handle_event(SDL_Event &e,int val)
 {	
-	centralize(val);
+	//centralize(val);
 	if(e.type==SDL_KEYUP)
 	{
 		isMoving = false;
 		return;		
 	}
 	isMoving = true;
+	//if(idleTimer>=100)
+	//	animationSpeed/=3;
+	//idleTimer = 0;
 	switch(e.key.keysym.sym)
 	{
 		case SDLK_a: 
@@ -135,7 +138,7 @@ void Character::handle_event(SDL_Event &e,int val)
 			dir = Up;
 			break;
 	}
-
+	bound();
 
 }
 

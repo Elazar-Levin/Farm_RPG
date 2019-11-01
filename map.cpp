@@ -3,7 +3,7 @@
 int Map::mapWidth = -1;
 int Map::mapHeight = -1;
 
-Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int tileHeight)
+Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int tileHeight, int sheetWidth)
 {
 	
 	std::vector<std::vector<Tile>> myMap(map.size(),std::vector<Tile>(map[0].size(),Tile(0,0,{{0,0}},Player)));
@@ -11,7 +11,7 @@ Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int 
 	{
 		for(int j = 0; j< map[i].size();j++)
 		{
-			myMap[i][j] = Tile(i * tileWidth,j*tileHeight, {{map[i][j]/23,map[i][j]%23}}, Player, 1, 1, 1, 1);
+			myMap[i][j] = Tile(i * tileWidth,j*tileHeight, {{map[i][j]/sheetWidth,map[i][j]%sheetWidth}}, Player, 1, 1, 1, 1);
 		}
 	
 	}
@@ -25,8 +25,7 @@ Map::Map(std::vector< std::vector <int> > map, int x, int y, int tileWidth, int 
 	mapHeight = height * tileHeight;
 	this->tileWidth = tileWidth;
 	this->tileHeight = tileHeight;
-	//Map(myMap, x, y, tileWidth, tileHeight);
-	
+		
 }
 
 
@@ -45,22 +44,26 @@ void Map::update(Character player)
 void Map::render(Texture *t, int frame, int index, int scale)
 {
 	
+	
 	int relativeX = x / (tileWidth);  
 	int relativeY = y / (tileHeight);
-
-	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
+	//reworked these functions, as it was transposed, still not toatally sure it works properly
+	for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
 	{
-		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
+		for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
 		{
-			map[i][j].x = (i * tileWidth-x); 
-			map[i][j].y = (j * tileHeight-y); 
+			map[j][i].x = (i * tileWidth-x); 
+			map[j][i].y = (j * tileHeight-y); 
 		}
 	
 	}	
-
-	for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
-		for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
-			map[i][j].render(t, frame, index, scale);
+	
+	for(int j = relativeY; j < (t->myWin.getHeight())/ tileHeight + relativeY+1 && j < height; j++)
+		for(int i = relativeX; i< (t->myWin.getWidth())/ tileWidth + relativeX+1 && i < width; i++)
+			map[j][i].render(t, frame, index, scale);
+	
+	
+	
 }
 
 
@@ -71,7 +74,7 @@ void Map::bound()
 	else if(x <= 0)
 		x=0;
 	if(y >= height*tileHeight - HEIGHT)
-		y=height*tileHeight - HEIGHT;
+		y = height*tileHeight - HEIGHT;
 	else if(y<=0)
 		y=0;
 }
