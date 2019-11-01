@@ -1,7 +1,7 @@
 #include "tile.h"
 
-int Tile::tileWidth = -1;
-int Tile::tileHeight = -1;
+//int Tile::tileWidth = -1;
+//int Tile::tileHeight = -1;
 
 /**
  * @brief Tile::Tile Constructs the tile object.
@@ -12,7 +12,7 @@ int Tile::tileHeight = -1;
  * @param spriteWidth The width of the animation in tiles (usually 1).
  * @param spriteHeight The height of the animation in tiles (usually 1).
  */
-Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, TileType t, int spriteWidth, int spriteHeight, int scale)
+Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, TileType t, int spriteWidth, int spriteHeight, int scale, int animationSpeed)
 {
 	x= windowX;
 	y=windowY;
@@ -20,8 +20,10 @@ Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, T
 	myType=t;
 	w=spriteWidth;
 	h=spriteHeight;
-	this->scale = scale;
-	
+	tileWidth = -1;
+	tileHeight = -1;
+	this -> scale = scale;
+	this -> animationSpeed = animationSpeed;
 }
 /**
  * @brief Tile::render Uses the texture object to render a frame from the current tile.
@@ -30,7 +32,9 @@ Tile::Tile(int windowX, int windowY, std::vector<std::pair<int, int> > frames, T
  */
 void Tile::render(Texture *t, int frame, int index, int scale)
 {
-	t->render(x,y,myFrames[frame%myFrames.size()].first,myFrames[frame%myFrames.size()].second,index,w,h,scale);
+	tileWidth = t -> tileWidth(index);
+	tileHeight = t -> tileHeight(index);
+	t->render(x,y,myFrames[(frame%(myFrames.size()*animationSpeed))/animationSpeed].first,myFrames[(frame%(myFrames.size()*animationSpeed))/animationSpeed].second,index,w,h,scale);
 }
 
 

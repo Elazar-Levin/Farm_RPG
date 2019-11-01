@@ -1,4 +1,4 @@
-SRC=texture.cpp window.cpp tile.cpp main.cpp map.cpp character.cpp movementmanager.cpp
+SRC=texture.cpp window.cpp tile.cpp main.cpp map.cpp character.cpp
 OBJ=$(SRC:%.cpp=%.o)
 
 LFLAGS=-lSDL2 -lSDL2_image

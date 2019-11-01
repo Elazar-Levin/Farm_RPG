@@ -23,7 +23,7 @@ public:
     Tile(int windowX, int windowY,
          std::vector<std::pair<int,int>> frames,
          TileType t,
-         int spriteWidth = 1, int spriteHeight = 1, int scale = 1);
+         int spriteWidth = 1, int spriteHeight = 1, int scale = 1, int animationSpeed = 1);
 
    
     int x, y, w, h; // w & h are measured in sprite sheet blocks
@@ -33,10 +33,12 @@ public:
     TileType myType;
 
     // Static variables are shared between all instances of the class
-    static int tileWidth, tileHeight; // measured in pixels
+    int tileWidth, tileHeight; // measured in pixels
 
     
     virtual void render(Texture *t, int frame, int index, int scale = 1);
+    
+    int animationSpeed; // goes slower the higher this is
     
 };
 

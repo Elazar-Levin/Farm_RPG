@@ -5,7 +5,6 @@
 #include <cstdlib>
 
 
-
 class Character : public Tile
 {
 	public:
@@ -13,7 +12,7 @@ class Character : public Tile
 		Character(int windowX, int windowY,
         std::vector<std::vector<std::pair<int,int>>> frames,
         TileType t, int relativeX, int relativeY,
-        int spriteWidth = 1, int spriteHeight = 1, int scale = 1);
+        int spriteWidth = 1, int spriteHeight = 1, int scale = 1, int animationSpeed = 1);
 		
 		void setCanMove(bool b);
 		void handle_event(SDL_Event &e, int val);
@@ -26,19 +25,16 @@ class Character : public Tile
 		void render(Texture *t, int frame, int index, int scale = 1);
 		int frameNo;
 	private:
-		void move(int x, int y);
+		
 		void bound();
 		std::vector<std::pair<int,int>> up;
 		std::vector<std::pair<int,int>> down;
 		std::vector<std::pair<int,int>> left;
 		std::vector<std::pair<int,int>> right;
-		std::vector<std::pair<int,int>> curr;
+	
 		Direction dir;
 		bool isMoving;
 		void centralize(int speed);
 		
 };
-
-
-
 #endif

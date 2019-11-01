@@ -11,23 +11,18 @@ using namespace std;
  */
 Texture::Texture()
 {
-	//myTexture=nullptr;
-	//myWidth=-1;
-	//myHeight=-1;
-	//myTileWidth=-1;
-	//myTileHeight=-1;
+	
 }
 
 /**
  * @brief Texture::~Texture Destructor.
  *
- * Should free the underlying SDL texture if it exists.
+ * Should free the underlying SDL texture if it exists, and delete all entries in the vector
  */
 Texture::~Texture()
 {
 	for(int i = 0; i < myTextures.size(); i++ )
 		free(i);
-	//free();
 }
 
 /**
