@@ -30,11 +30,11 @@ int main()
     Texture myTexture;
     myTexture.loadFile(charFilename, 16, 32);
 	myTexture.loadFile(backgroundFileName, 32, 32);
-
+	/*
 	std::vector< std::vector <int > > myMap;
 	string line;
 	ifstream myfile;
-	myfile.open ("Test.csv");
+	myfile.open ("background2.csv");
 	
 	if (myfile.is_open()) //process the csv to make the map
   	{
@@ -50,10 +50,12 @@ int main()
    		}
  	   	myfile.close();
   	}
-  	
+  	*/
   	set<SDL_Keycode> movingKeys = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN};
-  	
-  	Map map(myMap,300,300, 32, 32, myTexture.sheetWidth(1)/myTexture.tileWidth(1));
+  	Map map(300,300, 32, 32);
+  	map.loadFile("background1.csv", myTexture.sheetWidth(1)/myTexture.tileWidth(1));
+  	map.loadFile("background2.csv", myTexture.sheetWidth(1)/myTexture.tileWidth(1));
+  	//Map map(myMap,300,300, 32, 32, myTexture.sheetWidth(1)/myTexture.tileWidth(1));
   
     bool quit = false;
 	Character player(320-32,240-64, {{{2,0}, {2,1}, {2,2}, {2,3}},{{0,0},{0,1},{0,2},{0,3}},{{3,0},{3,1},{3,2},{3,3}},{{1,0},{1,1},{1,2},{1,3}},{{0,5},{0,6},{0,7}}},Player, 100, 100,1,1,1,2);
